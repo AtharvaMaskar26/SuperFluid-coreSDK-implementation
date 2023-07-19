@@ -6,7 +6,7 @@ import { Signer, ethers } from "ethers";
 // *** Later try it with Alchemy ***
 const provider = new ethers.providers.InfuraProvider(
   "sepolia",
-  "3ab346650e7a4d89a904961de6f455b0" // This is the API key from Infura
+  "<Enter your API Key>" // This is the API key from Infura - Secret
 );
 
 // Creating a new instance of chain 
@@ -48,4 +48,44 @@ let accountFlowInfo = await daix.getAccountFlowInfo({
 });
 console.log("Account Flow info: ", accountFlowInfo);
 
-// Write Operations
+// ### WRITE OPERATIONS ###
+// MOST IMPORTANT - Create Signer First 
+const signer = sf.createSigner({ privateKey: "<Enter Your Private Key>", provider });
+
+
+
+// Create Flow
+// 1) Instantiate operation to create a 100,000 wei/second stream
+let createFlowOp = daix.createFlow({
+  sender: "0x2Ae018789D7f82FedfbfE221C1A8eD58E99511E8",
+  receiver: "0x6eba7Bd536557de0D0038905d7C0a4E0dCdd7ab1",
+  flowRate: "100000",
+});
+
+// 2) Execute operation on aliceSigner
+await createFlowOp.exec(signer);
+
+// 3) USe the same operation object to create 100,000 wei/second stream again
+// await createFlowOp.exec(aliceSigner); (***Commenting for now)
+
+// Updating Stream
+//load the token you'd like to use like this 
+//note that tokens may be loaded by symbol or by address
+let flowOp = daix.updateFlow({
+  sender: "0x2Ae018789D7f82FedfbfE221C1A8eD58E99511E8",
+  receiver: "0x6eba7Bd536557de0D0038905d7C0a4E0dCdd7ab1",
+  flowRate: "1000",
+});
+
+await flowOp.exec(signer); // should have same address as `sender`
+
+
+// Deleting Stream
+//load the token you'd like to use like this 
+//note that tokens may be loaded by symbol or by address
+let delFlo = daix.deleteFlow({
+  sender: "0x2Ae018789D7f82FedfbfE221C1A8eD58E99511E8",
+  receiver: "0x6eba7Bd536557de0D0038905d7C0a4E0dCdd7ab1",
+});
+
+await delFlo.exec(signer); // should have same address as sender
