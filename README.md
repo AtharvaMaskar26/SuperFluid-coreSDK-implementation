@@ -3,7 +3,7 @@ implemented Create, Update and Delete Stream
 
 ## Step 1 - Intialize Node Package
 ```
-npm init
+npm init -y
 ```
 
 ## Step 2 - Installing Dependencies
